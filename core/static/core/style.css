@@ -1,0 +1,448 @@
+/* Reset some default styling */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+}
+
+/* Header and Navigation */
+header {
+    background-color: #2d3e50;
+    padding: 20px;
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+nav .logo h1 {
+    font-size: 24px;
+}
+
+nav .nav-links ul {
+    list-style: none;
+    display: flex;
+}
+
+nav .nav-links ul li {
+    margin-left: 20px;
+}
+
+nav .nav-links ul li a {
+    text-decoration: none;
+    color: white;
+    font-size: 16px;
+}
+
+nav .nav-links ul li a:hover {
+    color: #1f9f92;
+}
+
+/* Hamburger Menu */
+.hamburger-menu {
+    display: none;
+    cursor: pointer;
+}
+
+.hamburger-menu .bar {
+    width: 25px;
+    height: 3px;
+    background-color: white;
+    margin: 5px 0;
+}
+
+/* Main Content */
+main {
+    padding: 40px;
+    text-align: center;
+}
+
+.intro h2 {
+    color: #2d3e50;
+    font-size: 28px;
+}
+
+.info ul {
+    list-style: none;
+    padding: 20px;
+}
+
+.info ul li {
+    margin-bottom: 10px;
+}
+
+/* Footer Styling */
+footer {
+    background-color: #2d3e50;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+}
+
+/* Login Button */
+.login a {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #1f9f92;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.login a:hover {
+    background-color: #2e9f93;
+}
+/* Main Content */
+main {
+    padding: 40px;
+    text-align: center;
+}
+
+/* Hero Section */
+.hero {
+    background-color: #1f9f92;
+    color: white;
+    padding: 60px 20px;
+    border-radius: 8px;
+    margin-bottom: 40px;
+}
+
+.hero h2 {
+    font-size: 32px;
+    margin-bottom: 20px;
+}
+
+.hero p {
+    font-size: 18px;
+    margin-bottom: 30px;
+}
+
+/* Call-to-Action Button */
+.cta-button {
+    display: inline-block;
+    padding: 15px 30px;
+    background-color: #2d3e50;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 18px;
+    transition: background-color 0.3s ease;
+}
+
+.cta-button:hover {
+    border: 1px solid #fff;
+}
+
+/* Info Section */
+.info-container {
+    display:flex; /* Change to block to stack sections */
+    margin: 40px 0;
+}
+
+.info {
+    background-color: white;
+    border: 1px solid #2d3e50;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 10px auto; /* Center the info sections */
+    width: 90%; /* Adjust width for better responsiveness */
+    max-width: 800px; /* Set a maximum width for larger screens */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.info:hover {
+    transform: scale(1.02); /* Slight scale effect on hover */
+}
+
+.info h3 {
+    color: #2d3e50;
+    margin-bottom: 15px;
+    font-size: 24px; /* Increased font size for better visibility */
+}
+
+.info p {
+    color: #555;
+    font-size: 16px; /* Increased font size for better readability */
+    line-height: 1.6; /* Improved line height for readability */
+}
+
+.info ol {
+    padding-left: 20px; /* Indentation for ordered list */
+    margin-top: 10px;
+}
+/* Responsive Design for Hamburger Menu */
+@media (max-width: 768px) {
+    .hamburger-menu {
+        display: block;
+    }
+
+    .nav-links {
+        display: none;
+        position: absolute;
+        top: 60px;
+        right: 0;
+        background-color: #2d3e50;
+        width: 100%;
+        text-align: center;
+    }
+
+    .nav-links ul {
+        flex-direction: column;
+    }
+
+    .nav-links.active {
+        display: block;
+    }
+
+    .nav-links ul li {
+        margin: 15px 0;
+    }
+}
+
+/* Login Page Styling */
+.login-outer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 0; /* Adjust as needed for spacing */
+  }
+  
+  /* Main container for the login box */
+  .login-container {
+    width: 900px; /* or a smaller width like 400-500px if you prefer */
+    max-width: 90%;
+    background-color: #ffffff;
+    display: flex;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+  
+  .login-illustration img {
+    max-width: 80%;
+    height: auto;
+  }
+  
+  /* Right form section */
+  .login-form {
+    flex: 1;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .login-form h2 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  /* Input fields and form layout */
+  .login-form form {
+    margin-bottom: 15px;
+  }
+  
+  .login-form form p {
+    margin-bottom: 15px; /* if using {{ form.as_p }} */
+  }
+  
+  .login-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #555;
+  }
+  
+  .login-form input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: border 0.2s;
+    margin-bottom: 15px;
+  }
+  
+  .login-form input:focus {
+    border-color: #1fbf92;
+    outline: none;
+  }
+  
+  /* Buttons */
+  .login-button,
+  .google-button {
+    display: inline-block;
+    width: 100%;
+    padding: 12px;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    margin-bottom: 15px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s, border-color 0.3s;
+  }
+  
+  /* Regular login button */
+  .login-button {
+    background-color: #1fbf92;
+    color: #fff;
+  }
+  
+  .login-button:hover {
+    background-color: #17a583;
+  }
+  
+  /* Google login button */
+  .google-button {
+    background-color: #fff;
+    color: #555;
+    border: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .google-button img {
+    margin-right: 8px;
+  }
+  
+  .google-button:hover {
+    background-color: #f8f8f8;
+    border-color: #999;
+  }
+  
+  /* Forgot password link */
+  .forgot-password {
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 30px;
+    text-align: right;
+  }
+  
+  .forgot-password a {
+    text-decoration: none;
+    color: #666;
+  }
+  
+  .forgot-password a:hover {
+    color: #333;
+  }
+  
+  /* Create account link */
+  .create-account {
+    text-align: center;
+    font-size: 0.95rem;
+    color: #666;
+  }
+  
+  .create-account a {
+    text-decoration: none;
+    color: #1fbf92;
+    font-weight: 600;
+  }
+  
+  .create-account a:hover {
+    color: #17a583;
+  }
+
+/* Logout */
+.logout-section {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 30px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .logout-section h2 {
+    margin-bottom: 20px;
+  }
+  
+  .logout-section p {
+    margin-bottom: 30px;
+  }
+  
+  .logout-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .logout-button:hover {
+    background-color: #0056b3;
+  }
+
+  /* Social Account Styling */
+  .google-login-section {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 30px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .google-login-section h2 {
+    margin-bottom: 20px;
+  }
+  
+  .google-login-section p {
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .messages {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 20px;
+    color: red; /* Or style as you like for messages */
+  }
+  
+  .google-submit-btn {
+    padding: 10px 20px;
+    background: #4285F4; /* Google blue */
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .google-submit-btn:hover {
+    background: #357AE8;
+  }
+  
+  .small-note {
+    margin-top: 20px;
+    font-size: 14px;
+  }
+  

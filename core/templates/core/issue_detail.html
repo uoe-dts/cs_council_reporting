@@ -1,0 +1,205 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}{{ issue.title }} - Chalkstone Council{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Issue Header -->
+    <div class="d-flex justify-content-between align-items-start mb-4">
+        <div>
+            <h1 class="h2 mb-2">{{ issue.title }}</h1>
+            <div class="d-flex align-items-center text-muted">
+                <span class="me-3">
+                    <i class="fas fa-calendar-alt me-1"></i>
+                    Reported on {{ issue.created_at|date:"F d, Y" }}
+                </span>
+                <span class="me-3">
+                    <i class="fas fa-user me-1"></i>
+                    By {{ issue.reporter.get_full_name|default:issue.reporter.username }}
+                </span>
+                <span>
+                    <i class="fas fa-map-marker-alt me-1"></i>
+                    {{ issue.location }}
+                </span>
+            </div>
+        </div>
+        <div class="d-flex gap-2">
+            {% if user.is_staff %}
+            <a href="{% url 'issue_update' issue.id %}" class="btn btn-primary">
+                <i class="fas fa-edit me-2"></i>Edit Issue
+            </a>
+            <a href="{% url 'issue_delete' issue.id %}" class="btn btn-outline-danger" data-confirm="Are you sure you want to delete this issue?">
+                <i class="fas fa-trash me-2"></i>Delete
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Issue Details -->
+        <div class="col-lg-8">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-4">
+                        <div>
+                            <span class="badge {% if issue.status == 'open' %}bg-danger{% elif issue.status == 'in_progress' %}bg-warning{% else %}bg-success{% endif %} me-2">
+                                {{ issue.get_status_display }}
+                            </span>
+                            <span class="badge bg-{% if issue.priority == 'high' %}danger{% elif issue.priority == 'medium' %}warning{% else %}info{% endif %}">
+                                {{ issue.get_priority_display }} Priority
+                            </span>
+                        </div>
+                        <div class="text-muted">
+                            <i class="fas fa-folder me-1"></i>
+                            {{ issue.get_category_display }}
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5 class="card-title">Description</h5>
+                        <p class="card-text">{{ issue.description|linebreaks }}</p>
+                    </div>
+
+                    {% if issue.image %}
+                    <div class="mb-4">
+                        <h5 class="card-title">Image</h5>
+                        <img src="{{ issue.image.url }}" alt="Issue Image" class="img-fluid rounded">
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Comments Section -->
+            <div class="card">
+                <div class="card-header bg-transparent">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-comments me-2"></i>Comments
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if user.is_authenticated %}
+                    <form method="post" action="{% url 'add_comment' issue.id %}" class="mb-4">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <textarea name="content" class="form-control" rows="3" placeholder="Add a comment..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane me-2"></i>Post Comment
+                        </button>
+                    </form>
+                    {% endif %}
+
+                    {% for comment in issue.comment_set.all %}
+                    <div class="comment mb-4">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div>
+                                <strong>{{ comment.user.get_full_name|default:comment.user.username }}</strong>
+                                <small class="text-muted ms-2">
+                                    {{ comment.created_at|date:"M d, Y H:i" }}
+                                </small>
+                            </div>
+                            {% if user == comment.user or user.is_staff %}
+                            <div class="dropdown">
+                                <button class="btn btn-link btn-sm text-muted" type="button" data-bs-toggle="dropdown">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <a class="dropdown-item" href="{% url 'edit_comment' comment.id %}">
+                                            <i class="fas fa-edit me-2"></i>Edit
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item text-danger" href="{% url 'delete_comment' comment.id %}" data-confirm="Are you sure you want to delete this comment?">
+                                            <i class="fas fa-trash me-2"></i>Delete
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <p class="card-text">{{ comment.content|linebreaks }}</p>
+                    </div>
+                    {% empty %}
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-comments fa-2x mb-3"></i>
+                        <p>No comments yet. Be the first to comment!</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Status Updates -->
+            <div class="card mb-4">
+                <div class="card-header bg-transparent">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-history me-2"></i>Status History
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="timeline">
+                        {% for update in issue.status_updates.all %}
+                        <div class="timeline-item">
+                            <div class="timeline-icon">
+                                <i class="fas fa-{% if update.status == 'open' %}exclamation-circle{% elif update.status == 'in_progress' %}spinner{% else %}check-circle{% endif %}"></i>
+                            </div>
+                            <div class="timeline-content">
+                                <h6 class="mb-1">{{ update.get_status_display }}</h6>
+                                <small class="text-muted">{{ update.created_at|date:"M d, Y H:i" }}</small>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="text-center text-muted py-3">
+                            <p>No status updates yet.</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Issue Details -->
+            <div class="card">
+                <div class="card-header bg-transparent">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-info-circle me-2"></i>Issue Details
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-3">
+                            <i class="fas fa-folder me-2 text-primary"></i>
+                            <strong>Category:</strong> {{ issue.get_category_display }}
+                        </li>
+                        <li class="mb-3">
+                            <i class="fas fa-exclamation-circle me-2 text-primary"></i>
+                            <strong>Priority:</strong> {{ issue.get_priority_display }}
+                        </li>
+                        <li class="mb-3">
+                            <i class="fas fa-map-marker-alt me-2 text-primary"></i>
+                            <strong>Location:</strong> {{ issue.location }}
+                        </li>
+                        <li class="mb-3">
+                            <i class="fas fa-user me-2 text-primary"></i>
+                            <strong>Reporter:</strong> {{ issue.reporter.get_full_name|default:issue.reporter.username }}
+                        </li>
+                        {% if issue.assigned_to %}
+                        <li class="mb-3">
+                            <i class="fas fa-user-tie me-2 text-primary"></i>
+                            <strong>Assigned To:</strong> {{ issue.assigned_to.get_full_name|default:issue.assigned_to.username }}
+                        </li>
+                        {% endif %}
+                        <li>
+                            <i class="fas fa-clock me-2 text-primary"></i>
+                            <strong>Last Updated:</strong> {{ issue.updated_at|date:"M d, Y H:i" }}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

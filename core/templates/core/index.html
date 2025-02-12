@@ -1,0 +1,213 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}Chalkstone Council - Community Issue Reporting{% endblock %}
+
+{% block content %}
+    <!-- Hero Section -->
+    <section class="hero position-relative">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 text-start position-relative" style="z-index: 2;">
+                    <h1 class="display-4 fw-bold mb-4">Report Community Issues</h1>
+                    <p class="lead mb-4">Help us maintain and improve Chalkstone by reporting issues that need attention. From road maintenance to environmental concerns, we're here to help.</p>
+                    <div class="d-flex gap-3">
+                        <a href="{% url 'issue_create' %}" class="btn btn-light btn-lg position-relative" style="z-index: 3;">
+                            <i class="fas fa-plus-circle me-2"></i>Report an Issue
+                        </a>
+                        <a href="{% url 'issue_list' %}" class="btn btn-outline-light btn-lg position-relative" style="z-index: 3;">
+                            <i class="fas fa-list me-2"></i>View All Issues
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-6 d-none d-lg-block position-relative" style="z-index: 1;">
+                    <div class="row g-4">
+                        <div class="col-6">
+                            <img src="{% static 'core/img/board-members.png' %}" alt="Community Members" class="img-fluid rounded shadow-sm">
+                        </div>
+                        <div class="col-6">
+                            <img src="{% static 'core/img/trust.png' %}" alt="Trust and Reliability" class="img-fluid rounded shadow-sm">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-5 fw-bold mb-3">Council Services</h2>
+                <p class="lead text-muted">Report issues related to our key service areas</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card h-100 service-item">
+                        <div class="card-body text-center p-4">
+                            <div class="service-icon mb-4">
+                                <i class="fas fa-road fa-3x text-primary"></i>
+                            </div>
+                            <h3 class="card-title h4">Roads & Infrastructure</h3>
+                            <p class="card-text">Report issues with roads, street lighting, footpaths, and other public infrastructure.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 service-item">
+                        <div class="card-body text-center p-4">
+                            <div class="service-icon mb-4">
+                                <i class="fas fa-leaf fa-3x text-primary"></i>
+                            </div>
+                            <h3 class="card-title h4">Environment</h3>
+                            <p class="card-text">Report environmental concerns, waste management issues, and maintenance needs.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 service-item">
+                        <div class="card-body text-center p-4">
+                            <div class="service-icon mb-4">
+                                <i class="fas fa-shield-alt fa-3x text-primary"></i>
+                            </div>
+                            <h3 class="card-title h4">Community Safety</h3>
+                            <p class="card-text">Report safety concerns, anti-social behavior, and other community issues.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Statistics Section -->
+    <section class="stats py-5 bg-light">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-ticket-alt fa-2x text-primary"></i>
+                        </div>
+                        <div class="stat-number" data-target="{{ total_issues|default:'0' }}">0</div>
+                        <div class="stat-label">Total Issues Reported</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-check-circle fa-2x text-success"></i>
+                        </div>
+                        <div class="stat-number" data-target="{{ resolved_issues|default:'0' }}">0</div>
+                        <div class="stat-label">Issues Resolved</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock fa-2x text-warning"></i>
+                        </div>
+                        <div class="stat-number" data-target="{{ avg_resolution_time|default:'0' }}">0</div>
+                        <div class="stat-label">Avg. Resolution Time (days)</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-users fa-2x text-info"></i>
+                        </div>
+                        <div class="stat-number" data-target="{{ active_users|default:'0' }}">0</div>
+                        <div class="stat-label">Active Users</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Process Section -->
+    <section class="process py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-5 fw-bold mb-3">Issue Reporting Process</h2>
+                <p class="lead text-muted">How we handle your reports</p>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-icon">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <div class="timeline-content">
+                                <h4>1. Submit Report</h4>
+                                <p>Fill out the issue report form with details about the problem and its location.</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-icon">
+                                <i class="fas fa-tasks"></i>
+                            </div>
+                            <div class="timeline-content">
+                                <h4>2. Assessment</h4>
+                                <p>Our team reviews your report and assigns it to the appropriate department.</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-icon">
+                                <i class="fas fa-tools"></i>
+                            </div>
+                            <div class="timeline-content">
+                                <h4>3. Action</h4>
+                                <p>The assigned team works on resolving the issue and updates the status.</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="timeline-content">
+                                <h4>4. Resolution</h4>
+                                <p>Once resolved, you'll be notified and can provide feedback on the solution.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card h-100">
+                        <div class="card-body p-2">
+                            <h3 class="card-title mb-2">Important Information</h3>
+                            <ul class="list-unstyled">
+                                <li class="mb-2">
+                                    <i class="fas fa-info-circle text-primary me-2"></i>
+                                    <strong>Emergency Issues:</strong> For urgent matters, please contact emergency services directly
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-info-circle text-primary me-2"></i>
+                                    <strong>Response Times:</strong> We aim to acknowledge reports within 24 hours
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-info-circle text-primary me-2"></i>
+                                    <strong>Updates:</strong> You'll receive notifications about your report's progress
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-info-circle text-primary me-2"></i>
+                                    <strong>Feedback:</strong> Your feedback helps us improve our services
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="cta py-5">
+        <div class="container text-center">
+            <h2 class="display-5 fw-bold mb-4">Report an Issue</h2>
+            <p class="lead mb-4">Help us maintain and improve Chalkstone by reporting issues that need attention.</p>
+            <a href="{% url 'issue_create' %}" class="btn btn-light btn-lg">
+                <i class="fas fa-plus-circle me-2"></i>Submit Report
+            </a>
+        </div>
+    </section>
+{% endblock %}
