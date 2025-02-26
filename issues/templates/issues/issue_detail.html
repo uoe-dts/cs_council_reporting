@@ -1,0 +1,117 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}{{ issue.title }} - Chalkstone Council{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">{{ issue.title }}</h4>
+                    <span class="badge bg-light text-primary">{{ issue.status }}</span>
+                </div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <p class="lead">{{ issue.description }}</p>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <p><strong>Reported by:</strong> {{ issue.reporter }}</p>
+                            <p><strong>Created:</strong> {{ issue.created_at|date:"F j, Y" }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Category:</strong> {{ issue.category }}</p>
+                            <p><strong>Assigned to:</strong> {{ issue.assignee|default:"Unassigned" }}</p>
+                        </div>
+                    </div>
+
+                    {% if user.is_staff or user == issue.reporter %}
+                        <div class="d-flex gap-2">
+                            <a href="{% url 'issue_edit' issue.pk %}" class="btn btn-outline-primary">Edit Issue</a>
+                            {% if user.is_staff %}
+                                <a href="{% url 'issue_delete' issue.pk %}" class="btn btn-outline-danger">Delete Issue</a>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Comments</h5>
+                </div>
+                <div class="card-body">
+                    {% for comment in issue.comments.all %}
+                        <div class="comment mb-3 pb-3 border-bottom">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <strong>{{ comment.author.username }}</strong>
+                                <small class="text-muted">{{ comment.created_at|date:"F j, Y g:i A" }}</small>
+                            </div>
+                            <p class="mb-0">{{ comment.text }}</p>
+                        </div>
+                    {% empty %}
+                        <p class="text-muted">No comments yet.</p>
+                    {% endfor %}
+
+                    {% if user.is_authenticated %}
+                        <form action="{% url 'add_comment' issue_id=issue.id %}" method="POST" class="mt-4">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                {{ comment_form.text }}
+                            </div>
+                            <button type="submit" class="btn btn-primary">Add Comment</button>
+                        </form>
+                    {% else %}
+                        <div class="alert alert-info">
+                            <a href="{% url 'account_login' %}" class="alert-link">Log in</a> to comment.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Issue Details</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <strong>Status:</strong>
+                            <span class="badge bg-primary">{{ issue.status }}</span>
+                        </li>
+                        <li class="mb-2">
+                            <strong>Priority:</strong>
+                            <span class="badge bg-danger">{{ issue.priority }}</span>
+                        </li>
+                        <li class="mb-2">
+                            <strong>Category:</strong>
+                            <span class="badge bg-info">{{ issue.category }}</span>
+                        </li>
+                        <li class="mb-2">
+                            <strong>Created:</strong>
+                            {{ issue.created_at|date:"F j, Y" }}
+                        </li>
+                        <li class="mb-2">
+                            <strong>Last Updated:</strong>
+                            {{ issue.updated_at|date:"F j, Y" }}
+                        </li>
+                        <li class="mb-2">
+                            <strong>Reporter:</strong>
+                            {{ issue.reporter }}
+                        </li>
+                        <li class="mb-2">
+                            <strong>Assigned To:</strong>
+                            {{ issue.assignee|default:"Unassigned" }}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

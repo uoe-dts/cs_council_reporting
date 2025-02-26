@@ -1,0 +1,59 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{% block title %}Chalkstone Council{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'issues/style.css' %}">
+    <script src="{% static 'issues/script.js' %}" defer></script>
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <header>
+        <nav>
+            <div class="logo">
+                <h1>Chalkstone Council</h1>
+            </div>
+            <div class="nav-links">
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/issues">Issues</a></li>
+                    {% if user.is_staff%}
+                    <li><a href="/analytics">Analytics</a></li>
+                    {% endif %}
+                    {% if user.is_authenticated %}
+                        <!-- Show logout link if the user is authenticated -->
+                        <li><a href="/accounts/logout" id="logoutBtn">Logout</a></li>
+                    {% else %}
+                        <!-- Show login link if the user is not authenticated -->
+                        <li><a href="/accounts/login/" id="loginBtn">Login</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+
+            <!-- Hamburger Menu for smaller screens -->
+            <div class="hamburger-menu" id="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Chalkstone Council. All rights reserved.</p>
+    </footer>
+</body>
+
+</html>

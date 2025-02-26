@@ -1,0 +1,54 @@
+{% extends 'issues/base.html' %}
+
+{% block title %}Issues - Chalkstone Council{% endblock %}
+
+{% block content %}
+    <section class="intro">
+        <h2>Welcome to Chalkstone Council's Issue Tracker</h2>
+        <p>This platform allows residents to report various issues like potholes, lighting problems, fly-tipping, and more. You can view the status of your reported issues and track their progress.</p>
+        <p>To get started, you can either report a new issue or check the existing ones below.</p>
+        <a href="{% url 'issue_create' %}" class="btn btn-primary">Report New Issue</a>
+    </section>
+
+    <section class="issue-list">
+        <h3>Current Issues</h3>
+        <table class="issues-table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Status</th>
+                    <th>Assignee</th>
+                    <th>Created At</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for issue in issues %}
+                    <tr>
+                        <td>{{ issue.title }}</td>
+                        <td>{{ issue.status }}</td>
+                        <td>{{ issue.assignee }}</td>
+                        <td>{{ issue.created_at }}</td>
+                        <td>
+                            <a href="{% url 'issue_detail' issue.pk %}">View Details</a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5">No issues have been reported yet.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+    <section class="issue-filter">
+        <h3>Filter by Category</h3>
+        <ul>
+            {% for category, category_name in categories %}
+                <li><a href="{% url 'issue_category' category %}">{{ category_name }}</a></li>
+            {% endfor %}
+        </ul>
+    </section>
+
+{% endblock %}

@@ -1,0 +1,669 @@
+/* Reset some default styling */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+}
+
+/* Header and Navigation */
+header {
+    background-color: #2d3e50;
+    padding: 20px;
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+nav .logo h1 {
+    font-size: 24px;
+}
+
+nav .nav-links ul {
+    list-style: none;
+    display: flex;
+}
+
+nav .nav-links ul li {
+    margin-left: 20px;
+}
+
+nav .nav-links ul li a {
+    text-decoration: none;
+    color: white;
+    font-size: 16px;
+}
+
+nav .nav-links ul li a:hover {
+    color: #1f9f92;
+}
+
+/* Hamburger Menu */
+.hamburger-menu {
+    display: none;
+    cursor: pointer;
+}
+
+.hamburger-menu .bar {
+    width: 25px;
+    height: 3px;
+    background-color: white;
+    margin: 5px 0;
+}
+
+/* Main Content */
+main {
+    padding: 40px;
+    text-align: center;
+}
+
+.intro h2 {
+    color: #2d3e50;
+    font-size: 28px;
+}
+
+.info ul {
+    list-style: none;
+    padding: 20px;
+}
+
+.info ul li {
+    margin-bottom: 10px;
+}
+
+/* Footer Styling */
+footer {
+    background-color: #2d3e50;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+}
+
+/* Login Button */
+.login a {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #1f9f92;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.login a:hover {
+    background-color: #2e9f93;
+}
+/* Main Content */
+main {
+    padding: 40px;
+    text-align: center;
+}
+
+/* Hero Section */
+.hero {
+    background-color: #1f9f92;
+    color: white;
+    padding: 60px 20px;
+    border-radius: 8px;
+    margin-bottom: 40px;
+}
+
+.hero h2 {
+    font-size: 32px;
+    margin-bottom: 20px;
+}
+
+.hero p {
+    font-size: 18px;
+    margin-bottom: 30px;
+}
+
+/* Call-to-Action Button */
+.cta-button {
+    display: inline-block;
+    padding: 15px 30px;
+    background-color: #2d3e50;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 18px;
+    transition: background-color 0.3s ease;
+}
+
+.cta-button:hover {
+    border: 1px solid #fff;
+}
+
+/* Info Section */
+.info-container {
+    display: block; /* Change to block to stack sections */
+    margin: 40px 0;
+}
+
+.info {
+    background-color: white;
+    border: 1px solid #2d3e50;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 10px auto; /* Center the info sections */
+    width: 90%; /* Adjust width for better responsiveness */
+    max-width: 800px; /* Set a maximum width for larger screens */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.info:hover {
+    transform: scale(1.02); /* Slight scale effect on hover */
+}
+
+.info h3 {
+    color: #2d3e50;
+    margin-bottom: 15px;
+    font-size: 24px; /* Increased font size for better visibility */
+}
+
+.info p {
+    color: #555;
+    font-size: 16px; /* Increased font size for better readability */
+    line-height: 1.6; /* Improved line height for readability */
+}
+
+.info ol {
+    padding-left: 20px; /* Indentation for ordered list */
+    margin-top: 10px;
+}
+/* Responsive Design for Hamburger Menu */
+@media (max-width: 768px) {
+    .hamburger-menu {
+        display: block;
+    }
+
+    .nav-links {
+        display: none;
+        position: absolute;
+        top: 60px;
+        right: 0;
+        background-color: #2d3e50;
+        width: 100%;
+        text-align: center;
+    }
+
+    .nav-links ul {
+        flex-direction: column;
+    }
+
+    .nav-links.active {
+        display: block;
+    }
+
+    .nav-links ul li {
+        margin: 15px 0;
+    }
+}
+
+/* General Table and Layout */
+.issues-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .issues-table th, .issues-table td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    text-align: left;
+  }
+  
+  .issues-table th {
+    background-color: #f4f4f4;
+  }
+  
+  .issues-table td {
+    background-color: #fff;
+  }
+  
+  /* Action Buttons */
+  .btn {
+    padding: 8px 12px;
+    margin-right: 10px;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: bold;
+    display: inline-block;
+  }
+  
+  .edit-btn {
+    background-color: #f0ad4e;
+    color: white;
+    text-align: center;
+  }
+  
+  .edit-btn:hover {
+    background-color: #ec971f;
+  }
+  
+  .delete-btn {
+    background-color: #d9534f;
+    color: white;
+    text-align: center;
+  }
+  
+  .delete-btn:hover {
+    background-color: #c9302c;
+  }
+  
+  /* Form and Dropdown Styling */
+  select {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    font-size: 14px;
+  }
+  
+  select:disabled {
+    background-color: #e9ecef;
+    cursor: not-allowed;
+  }
+
+  /* General button styles */
+.btn {
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-align: center;
+    text-decoration: none;
+    color: #fff;
+    font-weight: bold;
+    display: inline-block;
+    margin-top: 10px;
+}
+
+.btn-create-issue {
+    background-color: #4CAF50; /* Green */
+    transition: background-color 0.3s ease;
+}
+
+.btn-create-issue:hover {
+    background-color: #45a049;
+}
+
+/* Styling the button for edit, delete */
+.btn-edit {
+    background-color: #f4b400; /* Yellow */
+    margin-right: 10px;
+}
+
+.btn-edit:hover {
+    background-color: #f1a200;
+}
+
+.btn-delete {
+    background-color: #e74c3c; /* Red */
+}
+
+.btn-delete:hover {
+    background-color: #c0392b;
+}
+
+/* Introductory Section */
+.issues-intro {
+    background-color: #f4f4f9;  /* Light background color */
+    padding: 30px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+    width: 50%;  /* Take up 50% of the screen */
+    margin: 0 auto;  /* Center align horizontally */
+    text-align: center;  /* Center text */
+}
+
+.issues-intro h2 {
+    color: #333;
+    font-size: 28px;
+    margin-bottom: 15px;
+}
+
+.issues-intro p {
+    font-size: 16px;
+    margin-bottom: 15px;
+    line-height: 1.6;
+}
+
+/* Styling the 'Create New Issue' button */
+.btn-create-issue {
+    background-color: #4CAF50; /* Green */
+    padding: 12px 30px;
+    border-radius: 25px;
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    display: inline-block;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-create-issue:hover {
+    background-color: #45a049;
+}
+
+/* Issues Table */
+.issues-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.issues-table th, .issues-table td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+.issues-table th {
+    background-color: #f2f2f2;
+}
+
+.issues-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.issues-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Button Styles */
+.btn {
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-align: center;
+    text-decoration: none;
+    color: #fff;
+    font-weight: bold;
+    display: inline-block;
+    margin-top: 10px;
+}
+
+.btn-edit {
+    background-color: #f4b400; /* Yellow */
+}
+
+.btn-delete {
+    background-color: #e74c3c; /* Red */
+}
+
+.btn-edit:hover {
+    background-color: #f1a200;
+}
+
+.btn-delete:hover {
+    background-color: #c0392b;
+}
+
+
+/* Container for the form */
+.form-container {
+    width: 50%; /* Make form container take up 50% of the screen */
+    margin: 0 auto; /* Center the container */
+    padding: 30px;
+    background-color: #f7f7f7; /* Light grey background for the form */
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+    text-align: center;
+}
+
+/* Styling the form title */
+.form-container h2 {
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* Styling the form elements */
+.issue-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Add some space between the elements */
+}
+
+/* Form Group for each input field */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.form-group label {
+    font-size: 16px;
+    margin-bottom: 8px;
+    color: #555;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 80%; /* Ensure all inputs take up same width */
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Textarea specific styles */
+.form-group textarea {
+    height: 120px; /* Set height for description input */
+    resize: none; /* Disable resizing */
+}
+
+/* Submit Button Styles */
+.btn-submit {
+    padding: 12px 30px;
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-submit:hover {
+    background-color: #45a049;
+}
+
+.create-issue-btn {
+    padding: 12px 30px;
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.create-issue-btn:hover {
+    background-color: #45a049;
+}
+
+/* Style the delete confirmation page */
+.delete-confirmation-container {
+    width: 60%;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .issue-details {
+    margin: 20px 0;
+    padding: 10px;
+    background-color: #f1f1f1;
+    border-radius: 8px;
+    text-align: left;
+  }
+  
+  .issue-details p {
+    font-size: 16px;
+    margin: 8px 0;
+  }
+  
+  .issue-details strong {
+    color: #333;
+  }
+  
+  .confirmation-actions {
+    margin-top: 20px;
+  }
+  
+  .confirmation-actions .btn {
+    padding: 10px 20px;
+    margin: 5px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+  }
+  
+  .confirmation-actions .btn-danger {
+    background-color: #e74c3c;
+    color: white;
+  }
+  
+  .confirmation-actions .btn-danger:hover {
+    background-color: #c0392b;
+  }
+  
+  .confirmation-actions .btn-cancel {
+    background-color: #95a5a6;
+    color: white;
+  }
+  
+  .confirmation-actions .btn-cancel:hover {
+    background-color: #7f8c8d;
+  }
+
+ /* Container for the entire issue detail */
+.issue-detail-container {
+    width: 70%;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Title and description styles */
+  .issue-header h1 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+  }
+  
+  .issue-description {
+    font-size: 1.2em;
+    margin-bottom: 20px;
+    color: #333;
+  }
+
+  .comments-header {
+    margin-top: 25px;
+  }
+  
+  /* Comment Section Styles */
+  .comments-section {
+    margin-top: 30px;
+    padding-top: 10px;
+    border-top: 2px solid #ddd;
+  }
+  
+  .comments-section h3 {
+    font-size: 1.8em;
+    margin-bottom: 20px;
+  }
+  
+  .comment {
+    margin-top: 5px;
+    background-color: #fff;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .comment b {
+    font-size: 1.2em;
+  }
+  
+  .comment small {
+    font-size: 0.9em;
+    color: #888;
+  }
+  
+  .comment p {
+    margin-top: 10px;
+    font-size: 1em;
+    color: #333;
+  }
+  
+  /* Comment Form Styles */
+  form {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  form textarea {
+    width: 100%;
+    height: 120px;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+  
+  form button {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  form button:hover {
+    background-color: #218838;
+  }
+  
+  form p a {
+    font-size: 1.1em;
+    color: #007bff;
+  }
+  
+  form p a:hover {
+    text-decoration: underline;
+  }
+  
