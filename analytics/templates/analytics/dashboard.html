@@ -1,0 +1,306 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Analytics Dashboard - Chalkstone Council{% endblock %}
+
+{% block extra_css %}
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Overview Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Total Issues</h5>
+                    <h2 class="card-text">{{ total_issues }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Open Issues</h5>
+                    <h2 class="card-text">{{ open_issues }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Resolved Issues</h5>
+                    <h2 class="card-text">{{ resolved_issues }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <h5 class="card-title">In Progress</h5>
+                    <h2 class="card-text">{{ in_progress_issues }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row mb-4">
+        <!-- Issue Trends -->
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Issue Trends</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="issueTrendsChart" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+        <!-- Category Distribution -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Issues by Category</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="categoryChart" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Maps and Analysis Row -->
+    <div class="row mb-4">
+        <!-- Geographic Distribution -->
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Geographic Distribution</h5>
+                </div>
+                <div class="card-body">
+                    <div id="map" style="height: 400px;"></div>
+                </div>
+            </div>
+        </div>
+        <!-- Priority Analysis -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Priority Analysis</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="priorityChart" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cost Analysis Row -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Cost Analysis</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="stat-card">
+                                <div class="stat-number">£{{ total_estimated_cost|floatformat:2 }}</div>
+                                <div class="stat-label">Total Estimated Cost</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="stat-card">
+                                <div class="stat-number">£{{ total_actual_cost|floatformat:2 }}</div>
+                                <div class="stat-label">Total Actual Cost</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="stat-card">
+                                <div class="stat-number">{{ avg_resolution_time|floatformat:1 }} days</div>
+                                <div class="stat-label">Average Resolution Time</div>
+                            </div>
+                        </div>
+                    </div>
+                    <canvas id="costChart" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Data for JavaScript -->
+<script>
+    // Issue trends data
+    const issueTrendsData = {
+        labels: {{ daily_issues|safe }},
+        datasets: [{
+            label: 'New Issues',
+            data: {{ daily_issues|safe }},
+            borderColor: 'rgb(75, 192, 192)',
+            tension: 0.1
+        }]
+    };
+
+    // Category data
+    const categoryData = {
+        labels: {{ issues_by_category|safe }},
+        datasets: [{
+            data: {{ issues_by_category|safe }},
+            backgroundColor: [
+                'rgb(255, 99, 132)',
+                'rgb(54, 162, 235)',
+                'rgb(255, 205, 86)',
+                'rgb(75, 192, 192)',
+                'rgb(153, 102, 255)',
+                'rgb(255, 159, 64)'
+            ]
+        }]
+    };
+
+    // Priority data
+    const priorityData = {
+        labels: {{ issues_by_priority|safe }},
+        datasets: [{
+            data: {{ issues_by_priority|safe }},
+            backgroundColor: [
+                'rgb(75, 192, 192)',
+                'rgb(255, 205, 86)',
+                'rgb(255, 159, 64)',
+                'rgb(255, 99, 132)'
+            ]
+        }]
+    };
+
+    // Cost data
+    const costData = {
+        labels: {{ cost_trends|safe }},
+        datasets: [{
+            label: 'Estimated Cost',
+            data: {{ cost_trends|safe }},
+            borderColor: 'rgb(75, 192, 192)',
+            tension: 0.1
+        }, {
+            label: 'Actual Cost',
+            data: {{ cost_trends|safe }},
+            borderColor: 'rgb(255, 99, 132)',
+            tension: 0.1
+        }]
+    };
+</script>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+    // Initialize charts
+    document.addEventListener('DOMContentLoaded', function() {
+        // Issue Trends Chart
+        const trendsCtx = document.getElementById('issueTrendsChart').getContext('2d');
+        new Chart(trendsCtx, {
+            type: 'line',
+            data: issueTrendsData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        // Category Chart
+        const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+        new Chart(categoryCtx, {
+            type: 'doughnut',
+            data: categoryData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        // Priority Chart
+        const priorityCtx = document.getElementById('priorityChart').getContext('2d');
+        new Chart(priorityCtx, {
+            type: 'pie',
+            data: priorityData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        // Cost Chart
+        const costCtx = document.getElementById('costChart').getContext('2d');
+        new Chart(costCtx, {
+            type: 'line',
+            data: costData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        // Initialize map
+        if (document.getElementById('map')) {
+            const map = L.map('map').setView([{{ center_point.avg_lat }}, {{ center_point.avg_lng }}], 13);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+
+            // Add markers for issues
+            {% for issue in issues_by_area %}
+            L.marker([{{ issue.lat }}, {{ issue.lng }}])
+                .addTo(map)
+                .bindPopup(`
+                    <strong>{{ issue.category }}</strong><br>
+                    Count: {{ issue.count }}<br>
+                    Avg Distance: {{ issue.avg_distance|floatformat:2 }}m
+                `);
+            {% endfor %}
+        }
+    });
+
+    // Update charts with real-time data
+    function updateCharts() {
+        fetch('/analytics/issue-trends/')
+            .then(response => response.json())
+            .then(data => {
+                // Update issue trends chart
+                issueTrendsChart.data.labels = data.dates;
+                issueTrendsChart.data.datasets[0].data = data.created;
+                issueTrendsChart.update();
+            });
+
+        fetch('/analytics/category-analysis/')
+            .then(response => response.json())
+            .then(data => {
+                // Update category chart
+                categoryChart.data.labels = data.categories;
+                categoryChart.data.datasets[0].data = data.totals;
+                categoryChart.update();
+            });
+
+        fetch('/analytics/cost-analysis/')
+            .then(response => response.json())
+            .then(data => {
+                // Update cost chart
+                costChart.data.labels = data.trends.map(t => t.month);
+                costChart.data.datasets[0].data = data.trends.map(t => t.estimated);
+                costChart.data.datasets[1].data = data.trends.map(t => t.actual);
+                costChart.update();
+            });
+    }
+
+    // Update charts every 5 minutes
+    setInterval(updateCharts, 300000);
+</script>
+{% endblock %} 
