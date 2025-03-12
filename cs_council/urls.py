@@ -1,3 +1,8 @@
+from django.contrib import admin
+from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
+
 """
 URL configuration for cs_council project.
 
@@ -14,9 +19,12 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-from django.urls import path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-]
+    path('issues/', include('issues.urls')),       # issues app
+    path('analytics/', include('analytics.urls')), # analytics app
+    path('comments/', include('comments.urls')),   # comments app
+    path('accounts/', include('django.contrib.auth.urls')),  # authentication URLs
+    path('', include('core.urls')),                # core app (moved to last)
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
