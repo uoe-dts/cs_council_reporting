@@ -1,6 +1,6 @@
 # issues/forms.py
 from django import forms
-from .models import Issue
+from .models import Issue, Comment
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
@@ -17,10 +17,20 @@ class StaffIssueForm(forms.ModelForm):
         model = Issue
         fields = ['title', 'description', 'assignee', 'status', 'category']  # Staff can assign and change status
 
-    # Optionally, you can customize the widget for the 'assignee' field, for example, using a dropdown to select users
-    assignee = forms.ModelChoiceField(
-        queryset=User.objects.filter(is_staff=True),  # Staff users only, set dynamically in the view
-        required=False,
-        empty_label="Select Assignee"
-    )
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Only show staff users in the assignee dropdown
+        self.fields['assignee'].queryset = User.objects.filter(is_staff=True)
+        self.fields['assignee'].empty_label = "Select Assignee"
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['text']
+        widgets = {
+            'text': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Write your comment here...'}),
+        }
+        labels = {
+            'text': 'Your Comment'
+        }
 
