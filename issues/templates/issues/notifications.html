@@ -21,7 +21,7 @@
                                         <h6 class="mb-1">{{ notification.message }}</h6>
                                         <small class="text-muted">{{ notification.created_at|date:"F j, Y g:i A" }}</small>
                                     </div>
-                                    <small class="text-muted">Related to: <a href="{% url 'issue_detail' notification.issue.pk %}">{{ notification.issue.title }}</a></small>
+                                    <small class="text-muted">Related to: <a href="{% url 'issues:issue_detail' notification.issue.pk %}">{{ notification.issue.title }}</a></small>
                                 </div>
                             {% endfor %}
                         </div>

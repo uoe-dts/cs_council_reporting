@@ -3,6 +3,8 @@
 from . import views
 from django.urls import path
 
+app_name = 'issues'
+
 urlpatterns = [
     path('', views.issue_list, name='issue_list'),  # Issue list page
     path('new/', views.issue_create, name='issue_create'),  # Page to create new issues

@@ -12,10 +12,10 @@
                     <h1 class="display-4 fw-bold mb-4">Report Community Issues</h1>
                     <p class="lead mb-4">Help us maintain and improve Chalkstone by reporting issues that need attention. From road maintenance to environmental concerns, we're here to help.</p>
                     <div class="d-flex gap-3">
-                        <a href="{% url 'issue_create' %}" class="btn btn-light btn-lg position-relative" style="z-index: 3;">
+                        <a href="{% url 'issues:issue_create' %}" class="btn btn-light btn-lg position-relative" style="z-index: 3;">
                             <i class="fas fa-plus-circle me-2"></i>Report an Issue
                         </a>
-                        <a href="{% url 'issue_list' %}" class="btn btn-outline-light btn-lg position-relative" style="z-index: 3;">
+                        <a href="{% url 'issues:issue_list' %}" class="btn btn-outline-light btn-lg position-relative" style="z-index: 3;">
                             <i class="fas fa-list me-2"></i>View All Issues
                         </a>
                     </div>
@@ -205,7 +205,7 @@
         <div class="container text-center">
             <h2 class="display-5 fw-bold mb-4">Report an Issue</h2>
             <p class="lead mb-4">Help us maintain and improve Chalkstone by reporting issues that need attention.</p>
-            <a href="{% url 'issue_create' %}" class="btn btn-light btn-lg">
+            <a href="{% url 'issues:issue_create' %}" class="btn btn-light btn-lg">
                 <i class="fas fa-plus-circle me-2"></i>Submit Report
             </a>
         </div>

@@ -81,7 +81,7 @@
                                     {% for resource in issue.resources.all %}
                                         <li class="list-group-item d-flex justify-content-between align-items-center">
                                             {{ resource.name }}
-                                            <form method="post" action="{% url 'remove_resource' issue.id resource.id %}" style="display: inline;">
+                                            <form method="post" action="{% url 'issues:remove_resource' issue.id resource.id %}" style="display: inline;">
                                                 {% csrf_token %}
                                                 <button type="submit" class="btn btn-sm btn-danger">
                                                     <i class="fas fa-times"></i> Remove
@@ -96,7 +96,7 @@
 
                             <!-- Add New Resource -->
                             <h6 class="mb-3">Add New Resource:</h6>
-                            <form method="post" action="{% url 'add_resource' issue.id %}">
+                            <form method="post" action="{% url 'issues:add_resource' issue.id %}">
                                 {% csrf_token %}
                                 <div class="input-group">
                                     <input type="text" class="form-control" name="resource_name" 
@@ -112,11 +112,11 @@
 
                     {% if user.is_staff or user == issue.reporter %}
                         <div class="d-flex gap-2">
-                            <a href="{% url 'issue_edit' issue.pk %}" class="btn btn-primary">
+                            <a href="{% url 'issues:issue_edit' issue.pk %}" class="btn btn-primary">
                                 <i class="fas fa-edit me-2"></i>Edit Issue
                             </a>
                             {% if user.is_staff %}
-                                <a href="{% url 'issue_delete' issue.pk %}" class="btn btn-danger">
+                                <a href="{% url 'issues:issue_delete' issue.pk %}" class="btn btn-danger">
                                     <i class="fas fa-trash me-2"></i>Delete Issue
                                 </a>
                             {% endif %}
@@ -143,7 +143,7 @@
                     {% endfor %}
 
                     {% if user.is_authenticated %}
-                        <form action="{% url 'add_comment' issue_id=issue.id %}" method="POST" class="mt-4">
+                        <form action="{% url 'issues:add_comment' issue_id=issue.id %}" method="POST" class="mt-4">
                             {% csrf_token %}
                             {{ comment_form|crispy }}
                             <button type="submit" class="btn btn-primary">
@@ -153,7 +153,7 @@
                     {% else %}
                         <div class="alert alert-info">
                             <i class="fas fa-info-circle me-2"></i>
-                            <a href="{% url 'account_login' %}" class="alert-link">Log in</a> to comment.
+                            <a href="{% url 'login' %}" class="alert-link">Log in</a> to comment.
                         </div>
                     {% endif %}
                 </div>

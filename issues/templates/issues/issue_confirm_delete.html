@@ -34,7 +34,7 @@
                     <form method="POST">
                         {% csrf_token %}
                         <div class="d-flex justify-content-between">
-                            <a href="{% url 'issue_detail' issue.pk %}" class="btn btn-secondary">
+                            <a href="{% url 'issues:issue_detail' issue.pk %}" class="btn btn-secondary">
                                 <i class="fas fa-times me-2"></i>Cancel
                             </a>
                             <button type="submit" class="btn btn-danger">

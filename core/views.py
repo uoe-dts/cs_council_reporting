@@ -3,9 +3,10 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from django.utils import timezone
 from django.db.models import Count, Avg, F, ExpressionWrapper, DurationField, Q
-from django.contrib.auth.forms import UserChangeForm, PasswordChangeForm
+from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash, get_user_model
 from issues.models import Issue, Comment
+from .forms import UserProfileForm
 
 User = get_user_model()
 
@@ -44,23 +45,23 @@ def contact(request):
 
 @login_required
 def profile(request):
+    form = UserProfileForm(instance=request.user)
+    password_form = PasswordChangeForm(request.user)
+
     if request.method == 'POST':
         if 'update_profile' in request.POST:
-            form = UserChangeForm(request.POST, instance=request.user)
+            form = UserProfileForm(request.POST, instance=request.user)
             if form.is_valid():
                 form.save()
                 messages.success(request, 'Your profile has been updated successfully.')
                 return redirect('profile')
         elif 'change_password' in request.POST:
-            form = PasswordChangeForm(request.user, request.POST)
-            if form.is_valid():
-                user = form.save()
+            password_form = PasswordChangeForm(request.user, request.POST)
+            if password_form.is_valid():
+                user = password_form.save()
                 update_session_auth_hash(request, user)
                 messages.success(request, 'Your password has been updated successfully.')
                 return redirect('profile')
-    else:
-        form = UserChangeForm(instance=request.user)
-        password_form = PasswordChangeForm(request.user)
     
     return render(request, 'core/profile.html', {
         'form': form,
