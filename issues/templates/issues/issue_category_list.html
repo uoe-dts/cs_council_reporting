@@ -20,12 +20,15 @@
 
     <!-- Category Navigation -->
     <div class="card shadow-sm mb-4">
+        <div class="card-header text-white" style="background-color: var(--primary-teal)">
+            <h5 class="mb-0">Categories</h5>
+        </div>
         <div class="card-body">
             <div class="row g-3">
                 {% for category_value, category_label in categories %}
                 <div class="col-md-3">
                     <a href="{% url 'issue_category' category_value %}" 
-                       class="btn btn-outline-primary w-100 {% if category_value == current_category %}active{% endif %}">
+                       class="btn btn-primary w-100 {% if category_value == current_category %}active{% endif %}">
                         <i class="fas fa-folder me-2"></i>{{ category_label }}
                     </a>
                 </div>
@@ -57,11 +60,11 @@
                             {{ issue.created_at|date:"M d, Y" }}
                         </small>
                         <div class="btn-group">
-                            <a href="{% url 'issue_detail' issue.pk %}" class="btn btn-sm btn-outline-primary">
+                            <a href="{% url 'issue_detail' issue.pk %}" class="btn btn-sm btn-primary">
                                 <i class="fas fa-eye me-1"></i>View
                             </a>
                             {% if user.is_staff or issue.reporter == user %}
-                            <a href="{% url 'issue_edit' issue.pk %}" class="btn btn-sm btn-outline-secondary">
+                            <a href="{% url 'issue_edit' issue.pk %}" class="btn btn-sm btn-secondary">
                                 <i class="fas fa-edit me-1"></i>Edit
                             </a>
                             {% endif %}
@@ -71,12 +74,12 @@
                 <div class="card-footer bg-transparent">
                     <div class="d-flex justify-content-between align-items-center">
                         <small class="text-muted">
-                            <i class="fas fa-map-marker-alt me-1"></i>
-                            {{ issue.location|truncatechars:30 }}
+                            <i class="fas fa-user me-1"></i>
+                            {{ issue.reporter }}
                         </small>
                         <small class="text-muted">
                             <i class="fas fa-tag me-1"></i>
-                            {{ issue.get_category_display }}
+                            <span class="badge bg-primary">{{ issue.get_category_display }}</span>
                         </small>
                     </div>
                 </div>
