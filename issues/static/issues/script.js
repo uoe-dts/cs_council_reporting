@@ -1,4 +1,3 @@
-// If you need to add JavaScript for form validation or confirmation
 document.addEventListener("DOMContentLoaded", function() {
     const deleteButtons = document.querySelectorAll('.delete-btn');
     
