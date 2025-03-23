@@ -1,5 +1,6 @@
 {% extends 'core/base.html' %}
 {% load static %}
+{% load crispy_forms_tags %}
 
 {% block title %}{{ issue.title }} - Chalkstone Council{% endblock %}
 
@@ -8,31 +9,116 @@
     <div class="row">
         <div class="col-lg-8">
             <div class="card shadow-sm mb-4">
-                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <div class="card-header d-flex justify-content-between align-items-center">
                     <h4 class="mb-0">{{ issue.title }}</h4>
-                    <span class="badge bg-light text-primary">{{ issue.status }}</span>
+                    {% if issue.is_overdue %}
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="badge bg-danger">Overdue</span>
+                    </div>
+                    {% endif %}
                 </div>
                 <div class="card-body">
+                    <!-- Issue Description Section -->
                     <div class="mb-4">
-                        <p class="lead">{{ issue.description }}</p>
+                        <h5 class="text-muted mb-3">
+                            <i class="fas fa-align-left me-2"></i>Description
+                        </h5>
+                        <p class="lead mb-0">{{ issue.description }}</p>
                     </div>
 
-                    <div class="row mb-4">
-                        <div class="col-md-6">
-                            <p><strong>Reported by:</strong> {{ issue.reporter }}</p>
-                            <p><strong>Created:</strong> {{ issue.created_at|date:"F j, Y" }}</p>
-                        </div>
-                        <div class="col-md-6">
-                            <p><strong>Category:</strong> {{ issue.category }}</p>
-                            <p><strong>Assigned to:</strong> {{ issue.assignee|default:"Unassigned" }}</p>
+                    <!-- Issue Information Section -->
+                    <div class="mb-4">
+                        <h5 class="text-muted mb-3">
+                            <i class="fas fa-info-circle me-2"></i>Issue Information
+                        </h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-center mb-3">
+                                    <i class="fas fa-user-circle text-primary me-2"></i>
+                                    <div>
+                                        <small class="text-muted d-block">Reported by</small>
+                                        <strong>{{ issue.reporter }}</strong>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-calendar text-primary me-2"></i>
+                                    <div>
+                                        <small class="text-muted d-block">Created</small>
+                                        <strong>{{ issue.created_at|date:"F j, Y" }}</strong>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-center mb-3">
+                                    <i class="fas fa-tag text-primary me-2"></i>
+                                    <div>
+                                        <small class="text-muted d-block">Category</small>
+                                        <strong>{{ issue.get_category_display }}</strong>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-user-shield text-primary me-2"></i>
+                                    <div>
+                                        <small class="text-muted d-block">Assigned to</small>
+                                        <strong>{{ issue.assignee|default:"Unassigned" }}</strong>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
+
+                    <!-- Resources Section -->
+                    {% if user.is_staff %}
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">Resource Management</h5>
+                        </div>
+                        <div class="card-body">
+                            <!-- Current Resources -->
+                            {% if issue.resources.all %}
+                                <h6 class="mb-3">Current Resources:</h6>
+                                <ul class="list-group mb-4">
+                                    {% for resource in issue.resources.all %}
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            {{ resource.name }}
+                                            <form method="post" action="{% url 'remove_resource' issue.id resource.id %}" style="display: inline;">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-sm btn-danger">
+                                                    <i class="fas fa-times"></i> Remove
+                                                </button>
+                                            </form>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% else %}
+                                <p class="text-muted mb-4">No resources currently assigned.</p>
+                            {% endif %}
+
+                            <!-- Add New Resource -->
+                            <h6 class="mb-3">Add New Resource:</h6>
+                            <form method="post" action="{% url 'add_resource' issue.id %}">
+                                {% csrf_token %}
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="resource_name" 
+                                           placeholder="Enter resource name (e.g., Vehicle, Equipment, Personnel)" required>
+                                    <button class="btn btn-primary" type="submit">
+                                        <i class="fas fa-plus"></i> Add Resource
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    {% endif %}
 
                     {% if user.is_staff or user == issue.reporter %}
                         <div class="d-flex gap-2">
-                            <a href="{% url 'issue_edit' issue.pk %}" class="btn btn-outline-primary">Edit Issue</a>
+                            <a href="{% url 'issue_edit' issue.pk %}" class="btn btn-primary">
+                                <i class="fas fa-edit me-2"></i>Edit Issue
+                            </a>
                             {% if user.is_staff %}
-                                <a href="{% url 'issue_delete' issue.pk %}" class="btn btn-outline-danger">Delete Issue</a>
+                                <a href="{% url 'issue_delete' issue.pk %}" class="btn btn-danger">
+                                    <i class="fas fa-trash me-2"></i>Delete Issue
+                                </a>
                             {% endif %}
                         </div>
                     {% endif %}
@@ -40,7 +126,7 @@
             </div>
 
             <div class="card shadow-sm">
-                <div class="card-header bg-light">
+                <div class="card-header">
                     <h5 class="mb-0">Comments</h5>
                 </div>
                 <div class="card-body">
@@ -59,13 +145,14 @@
                     {% if user.is_authenticated %}
                         <form action="{% url 'add_comment' issue_id=issue.id %}" method="POST" class="mt-4">
                             {% csrf_token %}
-                            <div class="mb-3">
-                                {{ comment_form.text }}
-                            </div>
-                            <button type="submit" class="btn btn-primary">Add Comment</button>
+                            {{ comment_form|crispy }}
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-comment me-2"></i>Add Comment
+                            </button>
                         </form>
                     {% else %}
                         <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
                             <a href="{% url 'account_login' %}" class="alert-link">Log in</a> to comment.
                         </div>
                     {% endif %}
@@ -74,41 +161,48 @@
         </div>
 
         <div class="col-lg-4">
-            <div class="card shadow-sm">
-                <div class="card-header bg-light">
-                    <h5 class="mb-0">Issue Details</h5>
+            <div class="card shadow-sm issue-detail-card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-info-circle me-2"></i>Issue Details
+                    </h5>
                 </div>
                 <div class="card-body">
-                    <ul class="list-unstyled">
-                        <li class="mb-2">
-                            <strong>Status:</strong>
-                            <span class="badge bg-primary">{{ issue.status }}</span>
-                        </li>
-                        <li class="mb-2">
-                            <strong>Priority:</strong>
-                            <span class="badge bg-danger">{{ issue.priority }}</span>
-                        </li>
-                        <li class="mb-2">
-                            <strong>Category:</strong>
-                            <span class="badge bg-info">{{ issue.category }}</span>
-                        </li>
-                        <li class="mb-2">
-                            <strong>Created:</strong>
-                            {{ issue.created_at|date:"F j, Y" }}
-                        </li>
-                        <li class="mb-2">
-                            <strong>Last Updated:</strong>
+                    <div class="info-item">
+                        <span class="info-label">Status</span>
+                        <div class="info-value">
+                            <span class="badge status-badge bg-{{ issue.get_status_color }}">
+                                <i class="fas fa-circle"></i>
+                                {{ issue.get_status_display }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <span class="info-label">Priority</span>
+                        <div class="info-value">
+                            <i class="fas fa-flag text-{{ issue.get_priority_color }}"></i>
+                            {{ issue.get_priority_display }}
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <span class="info-label">Last Updated</span>
+                        <div class="info-value">
+                            <i class="fas fa-clock text-muted"></i>
                             {{ issue.updated_at|date:"F j, Y" }}
-                        </li>
-                        <li class="mb-2">
-                            <strong>Reporter:</strong>
-                            {{ issue.reporter }}
-                        </li>
-                        <li class="mb-2">
-                            <strong>Assigned To:</strong>
-                            {{ issue.assignee|default:"Unassigned" }}
-                        </li>
-                    </ul>
+                        </div>
+                    </div>
+
+                    {% if issue.resolved_at %}
+                    <div class="info-item">
+                        <span class="info-label">Resolved On</span>
+                        <div class="info-value">
+                            <i class="fas fa-check-circle text-success"></i>
+                            {{ issue.resolved_at|date:"F j, Y" }}
+                        </div>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
