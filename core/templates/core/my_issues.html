@@ -1,0 +1,57 @@
+{% extends 'core/base.html' %}
+{% load humanize %}
+
+{% block title %}My Issues - Chalkstone Council{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>My Reported Issues</h2>
+                <a href="{% url 'issue_create' %}" class="btn btn-primary">
+                    <i class="fas fa-plus me-2"></i>Report New Issue
+                </a>
+            </div>
+
+            {% if issues %}
+                <div class="row">
+                    {% for issue in issues %}
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ issue.title }}</h5>
+                                    <p class="card-text text-muted">
+                                        <small>
+                                            <i class="fas fa-calendar me-1"></i>
+                                            Reported {{ issue.created_at|naturaltime }}
+                                        </small>
+                                    </p>
+                                    <p class="card-text">{{ issue.description|truncatewords:30 }}</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="badge {% if issue.status == 'open' %}bg-success{% elif issue.status == 'in_progress' %}bg-warning{% else %}bg-secondary{% endif %}">
+                                            {{ issue.get_status_display }}
+                                        </span>
+                                        <a href="{% url 'issue_detail' issue.id %}" class="btn btn-outline-primary btn-sm">
+                                            View Details
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-clipboard-list fa-3x text-muted mb-3"></i>
+                    <h4>No Issues Reported Yet</h4>
+                    <p class="text-muted">You haven't reported any issues yet.</p>
+                    <a href="{% url 'issue_create' %}" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>Report Your First Issue
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %} 

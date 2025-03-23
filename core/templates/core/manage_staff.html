@@ -1,0 +1,193 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Manage Staff Members - Chalkstone Council{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">Manage Staff Members</h4>
+                    <div class="d-flex gap-2">
+                        <span class="badge bg-light text-primary">{{ total_users }} Total Users</span>
+                        <span class="badge bg-light text-primary">{{ staff_count }} Staff Members</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <form method="get" class="mb-4">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                    <input type="text" name="search" class="form-control" placeholder="Search users..." value="{{ search_query }}">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <select name="filter" class="form-select">
+                                    <option value="all" {% if filter_type == 'all' %}selected{% endif %}>All Users</option>
+                                    <option value="staff" {% if filter_type == 'staff' %}selected{% endif %}>Staff Members</option>
+                                    <option value="non_staff" {% if filter_type == 'non_staff' %}selected{% endif %}>Non-Staff Users</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="fas fa-filter me-2"></i>Filter
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <form method="post" id="staffForm">
+                        {% csrf_token %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            <input type="checkbox" class="form-check-input" id="selectAll">
+                                        </th>
+                                        <th>User</th>
+                                        <th>Email</th>
+                                        <th>Status</th>
+                                        <th>Joined</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for user in users %}
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" name="user_ids" value="{{ user.id }}" class="form-check-input user-checkbox">
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <i class="fas fa-user-circle text-primary me-2"></i>
+                                                    {{ user.get_full_name|default:user.username }}
+                                                </div>
+                                            </td>
+                                            <td>{{ user.email }}</td>
+                                            <td>
+                                                {% if user.is_staff %}
+                                                    <span class="badge bg-success">Staff Member</span>
+                                                {% else %}
+                                                    <span class="badge bg-secondary">Regular User</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ user.date_joined|date:"F j, Y" }}</td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <button type="button" class="btn btn-sm btn-outline-primary" onclick="toggleStaff({{ user.id }})">
+                                                        {% if user.is_staff %}
+                                                            <i class="fas fa-user-slash me-1"></i>Remove Staff
+                                                        {% else %}
+                                                            <i class="fas fa-user-shield me-1"></i>Make Staff
+                                                        {% endif %}
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% empty %}
+                                        <tr>
+                                            <td colspan="6" class="text-center py-4">
+                                                <div class="text-muted">
+                                                    <i class="fas fa-search fa-2x mb-3"></i>
+                                                    <p>No users found matching your criteria.</p>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mt-4">
+                            <div class="btn-group">
+                                <button type="submit" name="action" value="make_staff" class="btn btn-success" id="makeStaffBtn" disabled>
+                                    <i class="fas fa-user-shield me-2"></i>Make Selected Staff
+                                </button>
+                                <button type="submit" name="action" value="remove_staff" class="btn btn-danger" id="removeStaffBtn" disabled>
+                                    <i class="fas fa-user-slash me-2"></i>Remove Staff Status
+                                </button>
+                            </div>
+                            <div class="text-muted">
+                                <span id="selectedCount">0</span> users selected
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const selectAll = document.getElementById('selectAll');
+    const userCheckboxes = document.querySelectorAll('.user-checkbox');
+    const makeStaffBtn = document.getElementById('makeStaffBtn');
+    const removeStaffBtn = document.getElementById('removeStaffBtn');
+    const selectedCount = document.getElementById('selectedCount');
+
+    function updateButtons() {
+        const checkedBoxes = document.querySelectorAll('.user-checkbox:checked');
+        const count = checkedBoxes.length;
+        selectedCount.textContent = count;
+        
+        makeStaffBtn.disabled = count === 0;
+        removeStaffBtn.disabled = count === 0;
+    }
+
+    selectAll.addEventListener('change', function() {
+        userCheckboxes.forEach(checkbox => {
+            checkbox.checked = this.checked;
+        });
+        updateButtons();
+    });
+
+    userCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            updateButtons();
+            // Update select all checkbox
+            selectAll.checked = Array.from(userCheckboxes).every(cb => cb.checked);
+        });
+    });
+
+    // Initial button state
+    updateButtons();
+});
+
+function toggleStaff(userId) {
+    const form = document.getElementById('staffForm');
+    const checkbox = document.querySelector(`input[name="user_ids"][value="${userId}"]`);
+    const userRow = checkbox.closest('tr');
+    const isStaff = userRow.querySelector('.badge').classList.contains('bg-success');
+    
+    // Set the action based on current staff status
+    const actionInput = document.createElement('input');
+    actionInput.type = 'hidden';
+    actionInput.name = 'action';
+    actionInput.value = isStaff ? 'remove_staff' : 'make_staff';
+    form.appendChild(actionInput);
+    
+    // Check only this user
+    document.querySelectorAll('.user-checkbox').forEach(cb => cb.checked = false);
+    checkbox.checked = true;
+    
+    // Submit the form
+    form.submit();
+}
+</script>
+{% endblock %}
+{% endblock %} 
