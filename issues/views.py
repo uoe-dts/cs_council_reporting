@@ -97,10 +97,12 @@ def issue_create(request):
         if form.is_valid():
             issue = form.save(commit=False)
             issue.reporter = request.user  # Set the logged-in user as the reporter
-            issue.status = 'Open'  # Default status for new issues
+            issue.status = 'open'  # Default status for new issues
             issue.save()
-            return redirect('issue_list')  # After creating an issue, redirect to issue list
-    
+            return redirect('issues:issue_list')  # After creating an issue, redirect to issue list
+        else:
+            # If form is invalid, return to the form with errors
+            return render(request, 'issues/issue_form.html', {'form': form})
     else:
         if request.user.is_staff:
             form = StaffIssueForm()
@@ -116,7 +118,7 @@ def issue_edit(request, pk):
 
     # Allow only staff or the reporter to edit
     if not (request.user.is_staff or issue.reporter == request.user):
-        return redirect('issue_detail', pk=issue.pk)
+        return redirect('issues:issue_detail', pk=issue.pk)
 
     if request.method == 'POST':
         if request.user.is_staff:
@@ -125,7 +127,7 @@ def issue_edit(request, pk):
             form = UserIssueForm(request.POST, instance=issue)  # Regular users can only change title/description
         if form.is_valid():
             form.save()
-            return redirect('issue_list')  # Redirecting to the issue list page after update
+            return redirect('issues:issue_list')  # Redirecting to the issue list page after update
     else:
         if request.user.is_staff:
             form = StaffIssueForm(instance=issue)
@@ -140,11 +142,11 @@ def issue_delete(request, pk):
     issue = get_object_or_404(Issue, pk=pk)
     
     if not request.user.is_staff:
-        return redirect('issue_detail', pk=issue.pk)
+        return redirect('issues:issue_detail', pk=issue.pk)
     
     if request.method == 'POST':
         issue.delete()
-        return redirect('issue_list')
+        return redirect('issues:issue_list')
     
     return render(request, 'issues/issue_confirm_delete.html', {'issue': issue})
 
@@ -176,13 +178,20 @@ def add_comment(request, issue_id):
             comment.issue = issue
             comment.author = request.user
             comment.save()
-            return redirect('issue_detail', pk=issue_id)
-    return redirect('issue_detail', pk=issue_id)
+            return redirect('issues:issue_detail', pk=issue_id)
+        else:
+            # If form is invalid, return to the detail page with the form
+            return render(request, 'issues/issue_detail.html', {
+                'issue': issue,
+                'comment_form': form,
+                'available_resources': Resource.objects.filter(status='available') if request.user.is_staff else None
+            })
+    return redirect('issues:issue_detail', pk=issue_id)
 
 @login_required
 def add_resource(request, issue_id):
     if not request.user.is_staff:
-        return redirect('issue_detail', pk=issue_id)
+        return redirect('issues:issue_detail', pk=issue_id)
     
     issue = get_object_or_404(Issue, pk=issue_id)
     if request.method == 'POST':
@@ -204,12 +213,12 @@ def add_resource(request, issue_id):
                     message=f"A new resource '{resource_name}' has been added to your issue."
                 )
     
-    return redirect('issue_detail', pk=issue_id)
+    return redirect('issues:issue_detail', pk=issue_id)
 
 @login_required
 def remove_resource(request, issue_id, resource_id):
     if not request.user.is_staff:
-        return redirect('issue_detail', pk=issue_id)
+        return redirect('issues:issue_detail', pk=issue_id)
     
     issue = get_object_or_404(Issue, pk=issue_id)
     resource = get_object_or_404(Resource, pk=resource_id)
@@ -230,4 +239,4 @@ def remove_resource(request, issue_id, resource_id):
         if not resource.issues.exists():
             resource.delete()
     
-    return redirect('issue_detail', pk=issue_id)
+    return redirect('issues:issue_detail', pk=issue_id)

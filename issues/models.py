@@ -53,6 +53,14 @@ class Resource(models.Model):
         return self.type.replace('_', ' ').title()
 
 class Issue(models.Model):
+    # Issue category choices
+    CATEGORY_CHOICES = [
+        ('roads', 'Roads & Infrastructure'),
+        ('environment', 'Environment'),
+        ('safety', 'Community Safety'),
+        ('other', 'Other'),
+    ]
+
     title = models.CharField(max_length=200)  # Title of the issue
     description = models.TextField()  # Detailed description of the issue
     reporter = models.ForeignKey(
